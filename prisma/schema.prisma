@@ -60,7 +60,7 @@ model Address {
 }
 
 model Donation {
-  id          Int           @id
+  id          Int           @id @default(autoincrement())
   consumerId  String        @map("cosumer_id")
   productId   Int           @map("product_id")
   donatorId   String?       @map("donator_id")
