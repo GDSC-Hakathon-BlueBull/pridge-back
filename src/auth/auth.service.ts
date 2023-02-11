@@ -45,21 +45,21 @@ export class AuthService {
   }
 
   async registerDonator(payload: RegisterDonatorPayload): Promise<TokenDto> {
-    // const data = await admin.auth().verifyIdToken(payload.accessToken);
-    //
-    // const registerData: RegisterDonatorData = {
-    //   uid: data.uid,
-    //   name: payload.name,
-    //   birthday: payload.birthday,
-    //   email: data.email!,
-    //   photo: payload.photo,
-    //   country: payload.country,
-    //   job: payload.job,
-    //   gender: payload.gender,
-    // };
-    //
-    // await this.authRepository.registerDonator(registerData);
-    const accessToken = await this.generateAccessToken('hey');
+    const data = await admin.auth().verifyIdToken(payload.accessToken);
+
+    const registerData: RegisterDonatorData = {
+      uid: data.uid,
+      name: payload.name,
+      birthday: payload.birthday,
+      email: data.email!,
+      photo: payload.photo,
+      country: payload.country,
+      job: payload.job,
+      gender: payload.gender,
+    };
+
+    await this.authRepository.registerDonator(registerData);
+    const accessToken = await this.generateAccessToken(data.uid);
     return {
       accessToken,
     };
