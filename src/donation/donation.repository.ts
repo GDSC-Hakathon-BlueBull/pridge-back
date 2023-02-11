@@ -24,4 +24,26 @@ export class DonationRepository {
       },
     });
   }
+
+  async getMatchableDonation(productId: number): Promise<Donation[]> {
+    return this.prisma.donation.findMany({
+      where: {
+        productId,
+        state: DonationState.PENDING,
+      },
+    });
+  }
+
+  async matchDonation(userId: string, donationId: number): Promise<Donation> {
+    return this.prisma.donation.update({
+      where: {
+        id: donationId,
+      },
+      data: {
+        state: DonationState.MATCHED,
+        donatorId: userId,
+        matchedTime: new Date(),
+      },
+    });
+  }
 }
