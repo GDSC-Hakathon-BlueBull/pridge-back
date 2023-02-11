@@ -5,6 +5,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthRepository } from './auth.repository';
 import * as admin from 'firebase-admin';
+import { JwtStrategy } from './guard/jwt.strategy';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import * as admin from 'firebase-admin';
   providers: [
     AuthService,
     AuthRepository,
+    JwtStrategy,
+    PassportModule,
     {
       provide: 'FIREBASE_APP',
       useFactory: async (configService: ConfigService) => {
