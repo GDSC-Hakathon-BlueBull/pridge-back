@@ -34,14 +34,6 @@ export class RegisterUserPayload {
   })
   birthday!: Date;
 
-  @IsDefined()
-  @IsString()
-  @ApiProperty({
-    type: String,
-    description: 'email',
-  })
-  email!: string;
-
   @IsOptional()
   @IsString()
   @ApiPropertyOptional({

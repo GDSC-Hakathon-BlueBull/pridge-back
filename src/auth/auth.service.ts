@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { AuthRepository } from './auth.repository';
 import { RegisterConsumerPayload } from './payload/register-consumer.payload';
 import { RegisterDonatorPayload } from './payload/register-donator.payload';
@@ -6,20 +6,24 @@ import { RegisterDonatorData } from './type/register-donator.data';
 import { RegisterConsumerData } from './type/register-consumer.type';
 import { JwtService } from '@nestjs/jwt';
 import { TokenDto } from './dto/token.dto';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly authRepository: AuthRepository,
     private readonly jwtService: JwtService,
+    @Inject('FIREBASE_APP') private readonly firebaseApp: admin.app.App,
   ) {}
 
   async registerConsumer(payload: RegisterConsumerPayload): Promise<TokenDto> {
+    const data = await admin.auth().verifyIdToken(payload.accessToken);
+
     const registerData: RegisterConsumerData = {
-      uid: 'kk',
+      uid: data.uid,
       name: payload.name,
       birthday: payload.birthday,
-      email: payload.email,
+      email: data.email!,
       photo: payload.photo,
       country: payload.country,
       address: {
@@ -41,11 +45,13 @@ export class AuthService {
   }
 
   async registerDonator(payload: RegisterDonatorPayload): Promise<TokenDto> {
+    const data = await admin.auth().verifyIdToken(payload.accessToken);
+
     const registerData: RegisterDonatorData = {
-      uid: 'kk',
+      uid: data.uid,
       name: payload.name,
       birthday: payload.birthday,
-      email: payload.email,
+      email: data.email!,
       photo: payload.photo,
       country: payload.country,
       job: payload.job,
