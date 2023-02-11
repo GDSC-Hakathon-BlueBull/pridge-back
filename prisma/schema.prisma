@@ -1,0 +1,128 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String   @id
+  name     String
+  birthday DateTime @db.Date
+  type     UserType
+  email    String
+  photo    String?
+  country  String
+
+  consumer Consumer?
+  donator  Donator?
+
+  @@map("user")
+}
+
+model Consumer {
+  id String @id
+
+  user     User       @relation(fields: [id], references: [id])
+  Donation Donation[]
+  Address  Address?
+
+  @@map("consumer")
+}
+
+model Donator {
+  id     String @id
+  job    String
+  gender Gender
+
+  user     User       @relation(fields: [id], references: [id])
+  Donation Donation[]
+
+  @@map("donator")
+}
+
+model Address {
+  id         Int     @id @default(autoincrement())
+  country    String
+  code       Int
+  consumerId String  @unique @map("consumer_id")
+  city       String
+  street     String
+  detail     String?
+  firstName  String  @map("first_name")
+  lastName   String  @map("last_name")
+
+  consumer Consumer @relation(fields: [consumerId], references: [id])
+
+  @@map("address")
+}
+
+model Donation {
+  id          Int           @id
+  consumerId  String        @map("cosumer_id")
+  productId   Int           @map("product_id")
+  donatorId   String?       @map("donator_id")
+  matchedTime DateTime?     @map("matched_time") @db.Date
+  state       DonationState @default(PENDING)
+  Letter      Letter?
+
+  consumer Consumer @relation(fields: [consumerId], references: [id])
+  product  Product  @relation(fields: [productId], references: [id])
+  donator  Donator? @relation(fields: [donatorId], references: [id])
+
+  @@map("donation")
+}
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  photo       String?
+  description String
+  price       Int
+  size        ProductSize
+  quantity    Int
+  Donation    Donation[]
+
+  @@map("product")
+}
+
+model Letter {
+  id      Int     @id
+  photo   String?
+  content String
+
+  donation Donation @relation(fields: [id], references: [id])
+
+  @@map("letter")
+}
+
+enum UserType {
+  DONATOR
+  CONSUMER
+
+  @@map("user_type")
+}
+
+enum DonationState {
+  PENDING
+  MATCHED
+  SUCCEED
+
+  @@map("donation_state")
+}
+
+enum ProductSize {
+  PANTY_LINER
+  SMALL
+  MIDIUM
+  LARGE
+  OVERNIGHT
+
+  @@map("product_size")
+}
+
+enum Gender {
+  WOMEN
+  MEN
+  NON_BINARY
+
+  @@map("gender")
+}
