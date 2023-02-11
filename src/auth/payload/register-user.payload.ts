@@ -34,14 +34,6 @@ export class RegisterUserPayload {
   birthday!: Date;
 
   @IsDefined()
-  @IsEnum(UserType)
-  @ApiProperty({
-    enum: UserType,
-    description: 'user type',
-  })
-  type!: UserType;
-
-  @IsDefined()
   @IsString()
   @ApiProperty({
     type: String,
