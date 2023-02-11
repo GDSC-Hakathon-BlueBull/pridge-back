@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiOperation, ApiProperty } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiProperty } from '@nestjs/swagger';
 import { RegisterConsumerPayload } from './payload/register-consumer.payload';
 import { RegisterDonatorPayload } from './payload/register-donator.payload';
 import { LoginPayload } from './payload/login.payload';
@@ -13,6 +13,7 @@ export class AuthController {
   @ApiOperation({
     description: 'register for consumer user',
   })
+  @ApiOkResponse({ type: TokenDto })
   async registerConsumer(
     @Body() payload: RegisterConsumerPayload,
   ): Promise<TokenDto> {
@@ -23,6 +24,7 @@ export class AuthController {
   @ApiOperation({
     description: 'register for donator user',
   })
+  @ApiOkResponse({ type: TokenDto })
   async registerDonator(
     @Body() payload: RegisterDonatorPayload,
   ): Promise<TokenDto> {
@@ -33,6 +35,7 @@ export class AuthController {
   @ApiOperation({
     description: 'login',
   })
+  @ApiOkResponse({ type: TokenDto })
   async login(@Body() payload: LoginPayload): Promise<TokenDto> {
     return this.authService.login(payload.accessToken);
   }
