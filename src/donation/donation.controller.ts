@@ -14,6 +14,7 @@ import { DonationService } from './donation.service';
 import { DonationDto } from './dto/donation.dto';
 import { MakeDonationPayload } from './payload/make-donation.payload';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { MatchDonationPayload } from './payload/match-donation.payload';
 
 @Controller('donations')
 @ApiTags('Donation API')
@@ -30,5 +31,18 @@ export class DonationController {
     @Body() payload: MakeDonationPayload,
   ): Promise<DonationDto> {
     return this.donationService.makeDonation(user, payload.productId);
+  }
+
+  @Post('match')
+  @Roles(UserType.DONATOR)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @ApiOperation({ description: 'match donator to available donation' })
+  @ApiCreatedResponse({ type: DonationDto })
+  async matchDonation(
+    @CurrentUser() user: User,
+    @Body() payload: MatchDonationPayload,
+  ): Promise<DonationDto> {
+    return this.donationService.matchDonation(user, payload.productId);
   }
 }
