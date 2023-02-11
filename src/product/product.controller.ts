@@ -1,7 +1,8 @@
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { ProductDto } from './dto/product.dto';
+import { ProductDetailDto } from './dto/product-detail.dto';
 import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ProductListDto } from './dto/productlist.dto';
 
 @Controller('products')
 export class ProductController {
@@ -9,10 +10,18 @@ export class ProductController {
 
   @Get(':productId')
   @ApiOperation({ summary: 'Get product info by id' })
-  @ApiOkResponse({ type: ProductDto })
+  @ApiOkResponse({ type: ProductDetailDto })
   async getProductById(
     @Param('productId', ParseIntPipe) productId: number,
-  ): Promise<ProductDto> {
+  ): Promise<ProductDetailDto> {
     return this.productService.getProductById(productId);
   }
+
+  @Get('/')
+  @ApiOperation({ summary: 'Get List of Products' })
+  @ApiOkResponse({ type: ProductListDto })
+  async getProductList(): Promise<ProductListDto> {
+    return this.productService.getProductList();
+  }
 }
+
