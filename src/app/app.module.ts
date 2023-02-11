@@ -6,9 +6,16 @@ import { ProductModule } from '../product/product.module';
 import { AuthModule } from '../auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { DonationModule } from '../donation/donation.module';
 
 @Module({
-  imports: [CommonModule, configModule, ProductModule, AuthModule],
+  imports: [
+    CommonModule,
+    configModule,
+    ProductModule,
+    AuthModule,
+    DonationModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
