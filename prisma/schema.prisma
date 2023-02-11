@@ -19,11 +19,12 @@ model User {
 }
 
 model Consumer {
-  id String @id
+  id        String @id
+  addressId Int    @unique @map("address_id")
 
   user     User       @relation(fields: [id], references: [id])
-  Donation Donation[]
-  Address  Address?
+  address  Address    @relation(fields: [addressId], references: [id])
+  donation Donation[]
 
   @@map("consumer")
 }
@@ -34,23 +35,22 @@ model Donator {
   gender Gender
 
   user     User       @relation(fields: [id], references: [id])
-  Donation Donation[]
+  donation Donation[]
 
   @@map("donator")
 }
 
 model Address {
-  id         Int     @id @default(autoincrement())
-  country    String
-  code       Int
-  consumerId String  @unique @map("consumer_id")
-  city       String
-  street     String
-  detail     String?
-  firstName  String  @map("first_name")
-  lastName   String  @map("last_name")
+  id        Int       @id @default(autoincrement())
+  country   String
+  code      Int
+  city      String
+  street    String
+  detail    String?
+  firstName String    @map("first_name")
+  lastName  String    @map("last_name")
 
-  consumer Consumer @relation(fields: [consumerId], references: [id])
+  consumer  Consumer?
 
   @@map("address")
 }
@@ -62,7 +62,7 @@ model Donation {
   donatorId   String?       @map("donator_id")
   matchedTime DateTime?     @map("matched_time") @db.Date
   state       DonationState @default(PENDING)
-  Letter      Letter?
+  letter      Letter?
 
   consumer Consumer @relation(fields: [consumerId], references: [id])
   product  Product  @relation(fields: [productId], references: [id])
@@ -79,7 +79,8 @@ model Product {
   price       Int
   size        ProductSize
   quantity    Int
-  Donation    Donation[]
+
+  donation Donation[]
 
   @@map("product")
 }
