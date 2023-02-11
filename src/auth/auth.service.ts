@@ -4,12 +4,17 @@ import { RegisterConsumerPayload } from './payload/register-consumer.payload';
 import { RegisterDonatorPayload } from './payload/register-donator.payload';
 import { RegisterDonatorData } from './type/register-donator.data';
 import { RegisterConsumerData } from './type/register-consumer.type';
+import { JwtService } from '@nestjs/jwt';
+import { TokenDto } from './dto/token.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly authRepository: AuthRepository) {}
+  constructor(
+    private readonly authRepository: AuthRepository,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  async registerConsumer(payload: RegisterConsumerPayload): Promise<void> {
+  async registerConsumer(payload: RegisterConsumerPayload): Promise<TokenDto> {
     const registerData: RegisterConsumerData = {
       uid: 'kk',
       name: payload.name,
@@ -28,10 +33,14 @@ export class AuthService {
       },
     };
 
-    return this.authRepository.registerConsumer(registerData);
+    await this.authRepository.registerConsumer(registerData);
+    const accessToken = await this.generateAccessToken('kk');
+    return {
+      accessToken,
+    };
   }
 
-  async registerDonator(payload: RegisterDonatorPayload): Promise<void> {
+  async registerDonator(payload: RegisterDonatorPayload): Promise<TokenDto> {
     const registerData: RegisterDonatorData = {
       uid: 'kk',
       name: payload.name,
@@ -43,10 +52,23 @@ export class AuthService {
       gender: payload.gender,
     };
 
-    return this.authRepository.registerDonator(registerData);
+    await this.authRepository.registerDonator(registerData);
+    const accessToken = await this.generateAccessToken('kk');
+    return {
+      accessToken,
+    };
   }
 
   async login(token: string): Promise<void> {
     return;
+  }
+
+  private async generateAccessToken(userId: string): Promise<string> {
+    return this.jwtService.signAsync(
+      { userId: userId },
+      {
+        expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRE,
+      },
+    );
   }
 }

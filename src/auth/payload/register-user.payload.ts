@@ -6,7 +6,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { UserType } from '@prisma/client';
+import { Transform } from 'class-transformer';
 
 export class RegisterUserPayload {
   @IsDefined()
@@ -27,6 +27,7 @@ export class RegisterUserPayload {
 
   @IsDefined()
   @IsDate()
+  @Transform(({ value }) => new Date(value))
   @ApiProperty({
     type: Date,
     description: 'birthday',
