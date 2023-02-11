@@ -2,6 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiProperty } from '@nestjs/swagger';
 import { RegisterConsumerPayload } from './payload/register-consumer.payload';
 import { RegisterDonatorPayload } from './payload/register-donator.payload';
+import { LoginPayload } from './payload/login.payload';
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +23,14 @@ export class AuthController {
   async registerDonator(
     @Body() payload: RegisterDonatorPayload,
   ): Promise<void> {
+    return;
+  }
+
+  @Post('login')
+  @ApiOperation({
+    description: 'login',
+  })
+  async login(@Body() payload: LoginPayload) {
     return;
   }
 }
