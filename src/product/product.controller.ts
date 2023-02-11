@@ -1,10 +1,11 @@
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ProductDetailDto } from './dto/product-detail.dto';
-import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ProductListDto } from './dto/productlist.dto';
 
 @Controller('products')
+@ApiTags('Product API')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
@@ -24,4 +25,3 @@ export class ProductController {
     return this.productService.getProductList();
   }
 }
-
