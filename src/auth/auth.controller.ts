@@ -34,6 +34,6 @@ export class AuthController {
     description: 'login',
   })
   async login(@Body() payload: LoginPayload): Promise<TokenDto> {
-    return {} as any;
+    return this.authService.login(payload.accessToken);
   }
 }

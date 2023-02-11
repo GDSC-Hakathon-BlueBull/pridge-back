@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthRepository } from './auth.repository';
 import { RegisterConsumerPayload } from './payload/register-consumer.payload';
 import { RegisterDonatorPayload } from './payload/register-donator.payload';
@@ -38,7 +38,7 @@ export class AuthService {
     };
 
     await this.authRepository.registerConsumer(registerData);
-    const accessToken = await this.generateAccessToken('kk');
+    const accessToken = await this.generateAccessToken(data.uid);
     return {
       accessToken,
     };
@@ -59,14 +59,21 @@ export class AuthService {
     };
 
     await this.authRepository.registerDonator(registerData);
-    const accessToken = await this.generateAccessToken('kk');
+    const accessToken = await this.generateAccessToken(data.uid);
     return {
       accessToken,
     };
   }
 
-  async login(token: string): Promise<void> {
-    return;
+  async login(token: string): Promise<TokenDto> {
+    const data = await admin.auth().verifyIdToken(token);
+
+    const isExist = await this.authRepository.isUserExist(data.uid);
+
+    if (!isExist) throw new UnauthorizedException();
+
+    const accessToken = await this.generateAccessToken(data.uid);
+    return { accessToken };
   }
 
   private async generateAccessToken(userId: string): Promise<string> {

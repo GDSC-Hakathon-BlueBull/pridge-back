@@ -50,4 +50,14 @@ export class AuthRepository {
       },
     });
   }
+
+  async isUserExist(userId: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    return !!user;
+  }
 }
