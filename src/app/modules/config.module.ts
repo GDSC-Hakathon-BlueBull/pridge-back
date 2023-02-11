@@ -12,5 +12,8 @@ export const configModule = ConfigModule.forRoot({
     DATABASE_URL: Joi.string().required(),
     JWT_ACCESS_TOKEN_EXPIRE: Joi.string().required(),
     JWT_SECRET_KEY: Joi.string().required(),
+    FIREBASE_PROJECT_ID: Joi.string().required(),
+    FIREBASE_PRIVATE_KEY: Joi.string().required(),
+    FIREBASE_CLIENT_EMAIL: Joi.string().required(),
   }),
 });
